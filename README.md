@@ -1,20 +1,26 @@
 # jcl2groovy
 
-FIXME: description
+Convert JCL to Groovy for use with IBM Dependency Based Build (DBB). Currently only a limited subset of JCL statements is supported.
 
 ## Installation
 
-Download from http://example.com/FIXME.
+Install `leiningen` , clone this repo and run `lein uberjar` to build a `.jar`. Alternatively download a `.jar` from the release section.
 
 ## Usage
 
-FIXME: explanation
+The input JCL has to be provided as a file. Run the following to generate the corresponding Groovy code:
 
-    $ java -jar jcl2groovy-0.1.0-standalone.jar [args]
+    $ java -jar jcl2groovy-0.1.0-standalone.jar [options] input.jcl
 
 ## Options
 
-FIXME: listing of options this app accepts.
+```
+jcl2groovy [options] input.jcl
+  -I, --include PATH  []  INCLUDE path
+  -g, --debug             dump debug information
+  -t, --todo              print generated @TODO comments
+  -h, --help              print this message
+```
 
 ## Examples
 
@@ -22,11 +28,7 @@ FIXME: listing of options this app accepts.
 
 ### Bugs
 
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+- 
 
 ## License
 
