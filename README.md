@@ -22,15 +22,3 @@ jcl2groovy [options] input.jcl
   -h, --help              print this message
 ```
 
-## Examples
-
-...
-
-### Bugs
-
-- 
-
-## License
-
-Copyright © 2022 FIXME
-
