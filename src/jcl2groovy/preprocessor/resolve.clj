@@ -8,9 +8,9 @@
 (defn resolve-symbols
   "Resolves JCL symbols in the ``input``."
   [input]
-  (loop [input input symbols (re-seq #"&[A-Z0-9$@#]+" input)]
+  (loop [input input symbols (re-seq #"&[A-Z0-9$@#]+\.?" input)]
     (if (> (count symbols) 0)
-      (let [replacement (str "$symbol." (jcl-utils/jcl-name-to-groovy-name (string/replace (first symbols) #"(&|\.)" "")))]
+      (let [replacement (format "${symbol.%s}" (jcl-utils/jcl-name-to-groovy-name (string/replace (first symbols) #"(&|\.)" "")))]
         (recur
          (string/replace input (first symbols) replacement)
          (rest symbols)))
@@ -55,12 +55,12 @@
 
       (resolve-include member-lines paths)
     ))]
-    
+
     (let [include-re #"^//[A-Z0-9$#@]* +INCLUDE.+$" member-re #"MEMBER=[A-Z0-9$#@]+"]
-      
+
       (loop [i 0 lines []]
         (if (< i (count jcl-lines))
-          
+
           (let [line (nth jcl-lines i)]
             (cond
               ;; line is an INCLUDE statement
