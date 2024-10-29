@@ -33,7 +33,7 @@
 (def funcs
   {:comment
    (fn [c] (str "//" c "\n"))
-   
+
    :unknown
    (fn [& _] "")
 
@@ -46,7 +46,7 @@
       ;"symbol = [:]\n"
       "\n"))
 
-   :exec 
+   :exec
    (fn [name parameters & statements]
      (str
       "// step " name "\n"
@@ -59,7 +59,7 @@
       (string/join statements)
       "    rc = mvsexec.execute()\n"
       "})\n// end " name "\n\n"))
-   
+
    :dd
    (fn [name parameters & _]
      (str
@@ -75,7 +75,7 @@
       (if (not (nil? (get parameters "DSN")))
         (str "\n        .dsn(\"" (get parameters "DSN") "\")")
         "")
-      
+
       ;; disp
       (let [disp (if (map? (get parameters "DISP")) (:positional (get parameters "DISP" "")) [(get parameters "DISP" "")])]
         (str
@@ -91,7 +91,7 @@
         ""
         (str
          "\n        .instreamData(\n            \"\"\""
-         (string/join "\"\"\" +\n            \"\"\"" (:in-stream parameters))
+         (string/join "\"\"\" + '\\n' +\n            \"\"\"" (:in-stream parameters))
          "\"\"\")"))
       ")\n"
 
@@ -99,19 +99,19 @@
       (if (= "*" (get parameters "SYSOUT"))
         (str "    mvsexec.copy(new CopyToHFS().ddName(\"" name "\").file(new File(\"/dev/fd0\")))\n")
         "")))
-   
+
    :set
    (fn [_ param]
      (string/join
       (for [symbol (keys (dissoc param :positional))]
         (str "    symbol." (jcl-utils/jcl-name-to-groovy-name symbol) " = '" (string/replace (get param symbol) #"(^'|'$)" "") "'\n"))))
-   
+
    :if
    (fn [_ condition] (str "// @TODO if " condition "\n"))
-   
+
    :else
    (fn [& _] "// else\n")
-   
+
    :endif
    (fn [& _] "// endif\n")})
 
