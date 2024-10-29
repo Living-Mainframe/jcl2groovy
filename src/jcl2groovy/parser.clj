@@ -20,7 +20,7 @@
 (defn parse-parameters-1
   "Split the parameter field."
   [parameter-field]
-  
+
   (if (= (count parameter-field) 0)
     []
     (loop [in parameter-field out [] temp "" depth 0 in-string? false]
@@ -47,10 +47,11 @@
   (letfn [(parse-subparameters [subparameters]
    (if (re-matches #"^\(.*\)$" subparameters)
      (->> (string/replace subparameters #"(^\(|\)$)" "") parse-parameters-1 parse-parameters-2)
-     subparameters))]
+     (string/trim subparameters)))]
 
-  (loop [parameters parameters out {:positional []}]
-    (if (> (count parameters) 0)
+  (loop [parameters parameters
+         out        {:positional []}]
+    (if (pos? (count parameters))
       (if (re-matches #"^[A-Z@#$]+=.+" (nth parameters 0))
         ;; keyword parameter
         (recur (vec (rest parameters)) (assoc out (re-find #"^[A-Z@#$]+" (first parameters)) (parse-subparameters (string/replace (first parameters) #"^[A-Z@#$]+=" ""))))
@@ -83,7 +84,7 @@
              nil
              []
              "/*")
-            
+
             (re-matches #"//.+" line) ;; in-stream data set ended by statement
             (recur
              i
@@ -91,7 +92,7 @@
              nil
              []
              "/*")
-            
+
             :else ;; line is part of the in-stream data set
             (recur (inc i) parse-tree last-dd (conj in-stream line) dlm))
 
@@ -143,7 +144,7 @@
           ;:else (recur (+ 1 i) :exec (conj syntax-tree (nth parse-tree i)) temp)
           ;:endif (recur (+ 1 i) :exec (conj syntax-tree (nth parse-tree i)) temp)
           (recur (+ 1 i) :exec syntax-tree (conj temp (nth parse-tree i))))
-        
+
         (if (= (nth (nth parse-tree i) 0) :exec)
           (recur (+ 1 i) :exec syntax-tree (vec (nth parse-tree i)))
           (recur (+ 1 i) :normal (conj syntax-tree (nth parse-tree i)) temp)))
@@ -151,4 +152,3 @@
       (if (= state :exec)
         (apply list (conj syntax-tree (apply list temp)))
         (apply list syntax-tree)))))
-
